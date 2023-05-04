@@ -58,7 +58,7 @@ def write_ckpt(pytree, dir, shard):
     # ckpt_dir = Path(dir)
     # ckpt_dir.mkdir(parents=True, exist_ok=True)
 
-    flattened, structure = jax.tree_flatten(pytree)
+    flattened, structure = jax.tree_util.tree_flatten(pytree) 
 
     start = time.time()
     # cpu_flattened = jax.device_put(flattened, cpu_device)
@@ -135,7 +135,7 @@ def read_ckpt(pytree, dir, shards_in, shards_out=None, load_opt=True):
     if shards_out is None:
         shards_out = shards_in
 
-    old_flattened, structure = jax.tree_flatten(pytree)
+    old_flattened, structure = jax.tree_util.tree_flatten(pytree)
 
     original_opt_state = pytree["opt_state"]
 
@@ -168,7 +168,7 @@ def read_ckpt(pytree, dir, shards_in, shards_out=None, load_opt=True):
         old_flattened, structure = jax.tree_flatten(pytree)
         unsharded = _unshard(shards, old_flattened)
 
-    loaded_pytree = jax.tree_unflatten(structure, unsharded)
+    loaded_pytree = jax.tree_util.tree_unflatten(structure, unsharded)
 
     if not load_opt:
         loaded_pytree['opt_state'] = original_opt_state
@@ -221,7 +221,7 @@ def read_ckpt_lowmem(pytree, dir, shards_in, shards_out=None, load_opt=True):
         old_flattened, structure = jax.tree_flatten(pytree)
         unsharded = _unshard()
 
-    loaded_pytree = jax.tree_unflatten(structure, unsharded)
+    loaded_pytree = jax.tree_util.tree_unflatten(structure, unsharded)
 
     if not load_opt:
         loaded_pytree['opt_state'] = original_opt_state
