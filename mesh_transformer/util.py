@@ -34,7 +34,7 @@ def global_norm(updates, use_psum=True):
     return jnp.sqrt(pre_sqrt)
 
 
-class ClipByGlobalNormState(chex.ArrayTree):
+class ClipByGlobalNormState(NamedTuple):
     """The `clip_by_global_norm` transformation is stateless."""
 
 
