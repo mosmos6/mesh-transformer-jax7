@@ -264,7 +264,7 @@ class CausalTransformer:
         seq = config["seq"]
         vocab = config["n_vocab"]
 
-        example_shape = (max(dp // jax.host_count(), 1), seq,)
+        example_shape = (max(dp // jax.process_count(), 1), seq,)
         x = jax.random.uniform(next(key), example_shape, minval=0, maxval=vocab).astype(jnp.uint32)  # batch, len
 
         head_print("key shape", jnp.array(key.take(mp_per_host)).shape)
@@ -656,7 +656,7 @@ class CausalTransformerV2:
         seq = config["seq"]
         vocab = config["n_vocab"]
 
-        example_shape = (max(dp // jax.host_count(), 1), seq,)
+        example_shape = (max(dp // jax.process_count(), 1), seq,)
         x = jax.random.uniform(next(key), example_shape, minval=0, maxval=vocab).astype(jnp.uint32)  # batch, len
 
         head_print("in shape", x.shape)
