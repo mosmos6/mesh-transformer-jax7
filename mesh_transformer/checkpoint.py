@@ -256,7 +256,7 @@ def parallel_read(old, fname, validate=True):
         if validate:
             assert o.shape == n.shape, "Incompatible checkpoint"
 
-    return jax.tree_unflatten(treedef, fix_dtype(new_vals))
+    return jax.tree_util.tree_unflatten(treedef, fix_dtype(new_vals))
 
 
 def tree_flatten_with_names(pytree, is_leaf, path="", to_id=id):
@@ -292,7 +292,7 @@ def write_ckpt_v2(model_state, dir):
         opt_map = tree_leaves_with_names(model_state["opt_state"])
 
         meta = {
-                    "total_hosts": jax.host_count(),
+                    "total_hosts": jax.process_count(),
                     "step": int(model_state["step"]),
                     "param_order": [param_map[id(i)] for i in jax.tree_leaves(model_state["params"])],
                     "opt_order": [opt_map[id(i)] for i in jax.tree_leaves(model_state["opt_state"])]
@@ -313,10 +313,10 @@ def write_ckpt_v2(model_state, dir):
 
 
 def read_sharded_v2(state, dir, checkpoint_hosts, state_shard):
-    files_per_host = checkpoint_hosts // jax.host_count()
+    files_per_host = checkpoint_hosts // jax.process_count()
 
     assert files_per_host >= 1, "can't restore model to larger pod than was trained on (yet)"
-    assert jax.host_count() * files_per_host == checkpoint_hosts, "weird host count"
+    assert jax.process_count() * files_per_host == checkpoint_hosts, "weird host count"
 
     if files_per_host == 1:
         head_print("using fast path of checkpoint restore (save shards == read shards)")
