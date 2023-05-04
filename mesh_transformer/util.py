@@ -4,7 +4,7 @@ from jax.experimental.pjit import with_sharding_constraint
 from optax import AdditiveWeightDecayState, GradientTransformation
 from typing import NamedTuple
 import chex
-OptState = chex.ArrayTree
+
 # same as with_sharding_constraint but doesn't fail if run outside of pjit/mesh context
 def maybe_shard(x, resource):
     try:
@@ -34,7 +34,7 @@ def global_norm(updates, use_psum=True):
     return jnp.sqrt(pre_sqrt)
 
 
-class ClipByGlobalNormState(OptState):
+class ClipByGlobalNormState(chex.ArrayTree):
     """The `clip_by_global_norm` transformation is stateless."""
 
 
