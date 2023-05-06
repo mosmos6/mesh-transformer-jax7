@@ -264,6 +264,8 @@ if __name__ == "__main__":
                 # get the scheduler step stored in the just-initialized optimizer
                 # should be zero
                 init_sched_state = network.state["opt_state"][-1]
+                print("init_sched_state")
+                print(init_sched_state)
 
             start = time.time()
             network.state = read_ckpt(network.state, initial_ckpt_state_path, devices.shape[1], load_opt=(not args.fresh_opt))
@@ -271,7 +273,11 @@ if __name__ == "__main__":
             if fine_tuning:
                 # overwrite the loaded scheduler step with zeros
                 # this makes fine-tuning use the lr schedule in
+                print("network.state["opt_state"]")
+                print(network.state["opt_state"])
+                network.state["opt_state"]=list(network.state["opt_state"])
                 network.state["opt_state"][-1] = init_sched_state
+                network.state["opt_state"]=tuple(network.state["opt_state"])
 
             print(f"network loaded in {time.time() - start:.06}s")
 
