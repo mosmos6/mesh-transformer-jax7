@@ -273,7 +273,7 @@ if __name__ == "__main__":
             if fine_tuning:
                 # overwrite the loaded scheduler step with zeros
                 # this makes fine-tuning use the lr schedule in
-                print("network.state["opt_state"]")
+                print("network.state")
                 print(network.state["opt_state"])
                 network.state["opt_state"]=list(network.state["opt_state"])
                 network.state["opt_state"][-1] = init_sched_state
