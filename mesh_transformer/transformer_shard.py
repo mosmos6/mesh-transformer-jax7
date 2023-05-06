@@ -226,7 +226,7 @@ class CausalTransformer:
                                                              ["batch", ...],
                                                              ["batch", ...],
                                                              ["batch", ...]),
-                                                    out_axes=(['all_loss'], ['correct'], ['last_loss'], ['loss']),                                                    
+                                                    out_axes=(["shard", "batch", ...]),                                                    
                                                     axis_resources={'shard': 'mp', 'batch': 'dp'})
 
         self.train_xmap = jax.experimental.maps.xmap(fun=train,
